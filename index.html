@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graphic Design SOP - Horizontal Process Flow</title>
+    <style>
+        @media print {
+            body { margin: 0; background: white; }
+            .controls { display: none; }
+            .canvas { transform: scale(0.8); transform-origin: top left; }
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8fafc;
+            overflow-x: auto;
+        }
+        
+        .controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .btn {
+            background: white;
+            border: 2px solid #3b82f6;
+            color: #3b82f6;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .btn:hover {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .canvas {
+            background: white;
+            min-width: 100%;
+            padding: 40px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+        }
+        
+        .diagram-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .diagram-header h1 {
+            font-size: 32px;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+        
+        .diagram-header .subtitle {
+            font-size: 14px;
+            color: #64748b;
+        }
+        
+        .flow-container {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            min-width: max-content;
+            padding: 20px;
+        }
+        
+        /* Process Box Styles */
+        .process-box {
+            background: white;
+            border: 3px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 20px;
+            width: 280px;
+            min-height: 320px;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .process-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+        
+        .process-number {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .process-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1e293b;
+            text-align: center;
+            line-height: 1.3;
+        }
+        
+        .process-content {
+            font-size: 12px;
+            color: #475569;
+            flex: 1;
+        }
+        
+        .info-row {
+            margin: 8px 0;
+            padding: 6px 10px;
+            background: #f8fafc;
+            border-radius: 4px;
+            border-left: 3px solid #94a3b8;
+            font-size: 11px;
+        }
+        
+        .info-row strong {
+            color: #1e293b;
+            display: block;
+            margin-bottom: 2px;
+        }
+        
+        .items-list {
+            list-style: none;
+            padding: 8px 0;
+        }
+        
+        .items-list li {
+            padding: 4px 0 4px 16px;
+            position: relative;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+        
+        .items-list li::before {
+            content: '•';
+            position: absolute;
+            left: 4px;
+            color: #3b82f6;
+            font-size: 14px;
+        }
+        
+        /* Arrow Connector - Horizontal */
+        .arrow-right {
+            display: flex;
+            align-items: center;
+            margin: 0 -10px;
+        }
+        
+        .arrow-line {
+            width: 60px;
+            height: 3px;
+            background: #94a3b8;
+            position: relative;
+        }
+        
+        .arrow-head {
+            width: 0;
+            height: 0;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            border-left: 20px solid #94a3b8;
+        }
+        
+        /* Decision Diamond */
+        .decision-diamond {
+            width: 160px;
+            height: 160px;
+            background: #fef3c7;
+            border: 3px solid #f59e0b;
+            transform: rotate(45deg);
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin: 0 20px;
+            flex-shrink: 0;
+        }
+        
+        .decision-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            text-align: center;
+            width: 140px;
+            font-weight: bold;
+            color: #92400e;
+            font-size: 13px;
+            line-height: 1.3;
+        }
+        
+        /* Swimlanes */
+        .swimlane-container {
+            display: flex;
+            gap: 8px;
+            margin: 10px 0;
+        }
+        
+        .lane {
+            flex: 1;
+            background: #f1f5f9;
+            border: 2px dashed #cbd5e1;
+            border-radius: 6px;
+            padding: 8px;
+            min-height: 60px;
+        }
+        
+        .lane-title {
+            font-size: 10px;
+            font-weight: bold;
+            color: #64748b;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        
+        .lane-content {
+            font-size: 11px;
+            color: #475569;
+        }
+        
+        /* Color coding */
+        .step-1 .process-number { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .step-2 .process-number { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        .step-3 .process-number { background: linear-gradient(135deg, #10b981, #059669); }
+        .step-4 .process-number { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .step-5 .process-number { background: linear-gradient(135deg, #f97316, #ea580c); }
+        .step-6 .process-number { background: linear-gradient(135deg, #14b8a6, #0d9488); }
+        .step-7 .process-number { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+        .step-8 .process-number { background: linear-gradient(135deg, #ec4899, #db2777); }
+        
+        .step-1 .process-box { border-color: #3b82f6; }
+        .step-2 .process-box { border-color: #8b5cf6; }
+        .step-3 .process-box { border-color: #10b981; }
+        .step-4 .process-box { border-color: #f59e0b; }
+        .step-5 .process-box { border-color: #f97316; }
+        .step-6 .process-box { border-color: #14b8a6; }
+        .step-7 .process-box { border-color: #6366f1; }
+        .step-8 .process-box { border-color: #ec4899; }
+        
+        .start-circle, .end-circle {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+        
+        .start-circle {
+            background: #059669;
+            color: white;
+        }
+        
+        .end-circle {
+            background: #1e293b;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <button class="btn" onclick="window.print()">🖨️ Print</button>
+    </div>
+    
+    <div class="canvas">
+        <div class="diagram-header">
+            <h1>Graphic Design SOP - Process Flow Map</h1>
+            <div class="subtitle">Horizontal Flow: Request → Triage → Create → Review → Approve → Archive</div>
+        </div>
+        
+        <div class="flow-container">
+            
+            <!-- START -->
+            <div class="start-circle">START</div>
+            
+            <div class="arrow-right">
+                <div class="arrow-line"></div>
+                <div class="arrow-head"></div>
+            </div>
+            
+            <!-- STEP 1 -->
+            <div class="step-1">
+                <div class="process-box">
+                    <div class="process-header">
+                        <div class="process-number">1</div>
+                        <div class="process-title">Submit Design Request</div>
+                    </div>
+                    <div class="process-content">
+                        <div class="info-row">
+                            <strong>📢 Trigger</strong>
+                            Form → Notify Mhaedo
+                        </div>
+                        <ul class="items-list">
+                            <li>Complete Design Request Form</li>
+                            <li>Title, Type, Description</li>
+                            <li>Deadline</li>
+                            <li>Upload Brand Assets</li>
+                            <li>Verify all fields complete</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="arrow-right">
+                <div class="arrow-line"></div>
+                <div class="arrow-head"></div>
+            </div>
+            
+            <!-- STEP 2 -->
+            <div class="step-2">
+                <div class="process-box">
+                    <div class="process-header">
+                        <div class="process-number">2</div>
+                        <div class="process-title">Triage & Assign</div>
+                    </div>
+                    <div class="process-content">
+                        <div class="info-row">
+                            <strong>👤 Assignee</strong>
+                            Mhaedo Reigh
+                        </div>
+                        <div class="swimlane-container">
+                            <div class="lane">
+                                <div class="lane-title">Comprehensive</div>
+                                <div class="lane-content">→ Douglas</div>
+                            </div>
+                            <div class="lane">
+                                <div class="lane-title">Template</div>
+                                <div class="lane-content">→ Jefferson</div>
+                            </div>
+                        </div>
+                        <ul class="items-list">
+                            <li>Set Due Date & Priority</li>
+                            <li>Upload to Basecamp</li>
+                            <li>Tag: Design Type + Round 1</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="arrow-right">
+                <div class="arrow-line"></div>
+                <div class="arrow-head"></div>
+            </div>
+            
+            <!-- STEP 3 -->
+            <div class="step-3">
+                <div class="process-box">
+                    <div class="process-header">
+                        <div class="process-number">3</div>
+                        <div class="process-title">Design Creation</div>
+                    </div>
+                    <div class="process-content">
+                        <div class="info-row">
+                            <strong>👤 Assignee</strong>
+                            Jefferson / Angel
+                        </div>
+                        <ul class="items-list">
+                            <li>Create design in Canva/Adobe</li>
+                            <li>Upload to Basecamp</li>
+                            <li>Notify for Internal Review</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="arrow-right">
+                <div class="arrow-line"></div>
+                <div class="arrow-head"></div>
+            </div>
+            
+            <!-- STEP 4 -->
+            <div class="step-4">
+                <div class="process-box">
+                    <div class="process-header">
+                        <div class="process-number">4</div>
+                        <div class="process-title">Internal Review</div>
+                    </div>
+                    <div class="process-content">
+                        <div class="info-row">
+                            <strong>👤 Assignees</strong>
+                            Mhaedo & Melissa
+                        </div>
+                        <div class="info-row">
+                            <strong>⏱️ Timeline</strong>
+                            48 hours for feedback
+                        </div>
+                        <ul class="items-list">
+                            <li>Review quality, branding, clarity</li>
+                            <li>Round 1, 2, or 3</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="arrow-right">
+                <div class="arrow-line"></div>
+                <div class="arrow-head"></div>
+            </div>
+            
+            <!-- DECISION 1 -->
+            <div class="decision-diamond">
+                <div class="decision-content">Internal Revisions Needed?</div>
+            </div>
+            
+            <div class="arrow-right">
+                <div class="arrow-line"></div>
+                <div class="arrow-head"></div>
+            </div>
+            
+            <!-- STEP 5 -->
+            <div class="step-5">
+                <div class="process-box">
+                    <div class="process-header">
+                        <div class="process-number">5</div>
+                        <div class="process-title">Client Review</div>
+                    </div>
+                    <div class="process-content">
+                        <div class="info-row">
+                            <strong>👤 Assignee</strong>
+                            Mhaedo Reigh
+                        </div>
+                        <div class="info-row">
+                            <strong>⏱️ Timeline</strong>
+                            48 hours for feedback
+                        </div>
+                        <ul class="items-list">
+                            <li>Move to "Needs Feedback"</li>
+                            <li>Notify requester via email</li>
+                            <li>Track revision round</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="arrow-right">
+                <div class="arrow-line"></div>
+                <div class="arrow-head"></div>
+            </div>
+            
+            <!-- DECISION 2 -->
+            <div class="decision-diamond">
+                <div class="decision-content">Client Approved?</div>
+            </div>
+            
+            <div class="arrow-right">
+                <div class="arrow-line"></div>
+                <div class="arrow-head"></div>
+            </div>
+            
+            <!-- STEP 6 -->
+            <div class="step-6">
+                <div class="process-box">
+                    <div class="process-header">
+                        <div class="process-number">6</div>
+                        <div class="process-title">Final Approval</div>
+                    </div>
+                    <div class="process-content">
+                        <div class="info-row">
+                            <strong>👤 Assignee</strong>
+                            Mhaedo Reigh
+                        </div>
+                        <ul class="items-list">
+                            <li>Mark Approved in Basecamp</li>
+                            <li>Export final files (.ai included)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="arrow-right">
+                <div class="arrow-line"></div>
+                <div class="arrow-head"></div>
+            </div>
+            
+            <!-- STEP 7 -->
+            <div class="step-7">
+                <div class="process-box">
+                    <div class="process-header">
+                        <div class="process-number">7</div>
+                        <div class="process-title">Upload to GHL</div>
+                    </div>
+                    <div class="process-content">
+                        <ul class="items-list">
+                            <li>Log into GHL → Media</li>
+                            <li>Upload to Client/Team folder</li>
+                            <li>Name: DesignName_Date_Approved.pdf</li>
+                            <li>Comment in ClickUp with link</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="arrow-right">
+                <div class="arrow-line"></div>
+                <div class="arrow-head"></div>
+            </div>
+            
+            <!-- STEP 8 -->
+            <div class="step-8">
+                <div class="process-box">
+                    <div class="process-header">
+                        <div class="process-number">8</div>
+                        <div class="process-title">Archive & Deliver</div>
+                    </div>
+                    <div class="process-content">
+                        <ul class="items-list">
+                            <li>Upload to Basecamp folder</li>
+                            <li>Add completion note</li>
+                            <li>Mark complete in ClickUp & Basecamp</li>
+                            <li>Email final result to client</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="arrow-right">
+                <div class="arrow-line"></div>
+                <div class="arrow-head"></div>
+            </div>
+            
+            <!-- END -->
+            <div class="end-circle">✓ END</div>
+            
+        </div>
+        
+        <!-- Feedback Loop Indicators Below -->
+        <div style="margin-top: 40px; padding: 20px; background: #f1f5f9; border-radius: 8px; text-align: center;">
+            <div style="font-size: 14px; font-weight: bold; color: #64748b; margin-bottom: 10px;">FEEDBACK LOOPS</div>
+            <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
+                <div style="padding: 10px 20px; background: #f3e8ff; border: 2px solid #8b5cf6; border-radius: 8px; font-size: 12px;">
+                    <strong style="color: #6b21a8;">Internal Revisions:</strong> Decision 1 → Step 3 (Design Creation)
+                </div>
+                <div style="padding: 10px 20p
